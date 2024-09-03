@@ -24,3 +24,6 @@ flutter:
     - assets/SouthIndianBeaches-Photoroom.png
     - assets/WestIndianBeaches-Photoroom.png
     - assets/EastIndianBeaches-Photoroom.png
+    - assets/popular_beach.png
+    - assets/activities_beach.png
+    - assets/marina_beach.png

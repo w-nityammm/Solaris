@@ -3,6 +3,8 @@ import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_carousel_slider/carousel_slider_indicators.dart';
 import 'package:flutter_carousel_slider/carousel_slider_transforms.dart';
 
+import 'region_page.dart'; // Import the RegionPage
+
 class HomePage extends StatelessWidget {
   final List<String> mapImages = [
     'assets/SouthIndianBeaches-Photoroom.png',
@@ -15,6 +17,25 @@ class HomePage extends StatelessWidget {
     'Western Coasts',
     'Eastern Coasts',
   ];
+
+  // Dummy data for beaches and their images
+  final Map<String, List<Map<String, String>>> beachesByRegion = {
+    'Southern Coasts': [
+      {'name': 'Marina Beach', 'image': 'assets/marina_beach.png'},
+      {'name': 'Kovalam Beach', 'image': 'assets/kovalam_beach.png'},
+      {'name': 'Varkala Beach', 'image': 'assets/varkala_beach.png'},
+    ],
+    'Western Coasts': [
+      {'name': 'Goa Beach', 'image': 'assets/goa_beach.png'},
+      {'name': 'Juhu Beach', 'image': 'assets/juhu_beach.png'},
+      {'name': 'Versova Beach', 'image': 'assets/versova_beach.png'},
+    ],
+    'Eastern Coasts': [
+      {'name': 'Puri Beach', 'image': 'assets/puri_beach.png'},
+      {'name': 'Digha Beach', 'image': 'assets/digha_beach.png'},
+      {'name': 'Gopalpur Beach', 'image': 'assets/gopalpur_beach.png'},
+    ],
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -60,47 +81,61 @@ class HomePage extends StatelessWidget {
                 child: CarouselSlider.builder(
                   unlimitedMode: true,
                   slideBuilder: (index) {
-                    return Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              mapImages[index],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to RegionPage with the relevant data
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegionPage(
+                              regionName: regionNames[index],
+                              beaches: beachesByRegion[regionNames[index]]!,
                             ),
                           ),
-                          Positioned(
-                            bottom: 10,
-                            left: 10,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              color: Colors.white.withOpacity(0.7),
-                              child: Text(
-                                regionNames[index],
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                mapImages[index],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              left: 10,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                color: Colors.white.withOpacity(0.7),
+                                child: Text(
+                                  regionNames[index],
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -114,8 +149,9 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
+              // Add the Popular Beaches and Activities section here
               DefaultTabController(
-                length: 4,
+                length: 2, // Two tabs: Popular Beaches and Activities
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -123,23 +159,21 @@ class HomePage extends StatelessWidget {
                       labelColor: Colors.orange,
                       unselectedLabelColor: Colors.black,
                       indicatorColor: Colors.orange,
-                      isScrollable: true,
+                      indicatorPadding: EdgeInsets.symmetric(horizontal: 20),
                       tabs: [
-                        Tab(text: 'All'),
-                        Tab(text: 'Popular'),
+                        Tab(text: 'Popular Beaches'),
                         Tab(text: 'Activities'),
-                        Tab(text: 'Top 10'),
                       ],
+                      labelPadding: EdgeInsets.symmetric(horizontal: 40),
+                      indicatorSize: TabBarIndicatorSize.label,
                     ),
                     SizedBox(height: 10),
                     SizedBox(
-                      height: 300, // Adjust this height as needed
+                      height: 200, // Adjust this height as needed
                       child: TabBarView(
                         children: [
-                          buildTabContent('Arjuna Beach', 'assets/arjuna_beach.png'),
-                          buildTabContent('Popular Beaches', 'assets/popular_beach.png'),
-                          buildTabContent('Activities', 'assets/activities.png'),
-                          buildTabContent('Top 10 Beaches', 'assets/top_10.png'),
+                          buildTabContent('assets/popular_beach.png'),
+                          buildTabContent('assets/activities_beach.png'),
                         ],
                       ),
                     ),
@@ -178,42 +212,20 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget buildTabContent(String title, String imagePath) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                image: AssetImage(imagePath),
-                fit: BoxFit.cover,
-              ),
+  Widget buildTabContent(String imagePath) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            image: DecorationImage(
+              image: AssetImage(imagePath),
+              fit: BoxFit.cover,
             ),
           ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                children: [
-                  Icon(Icons.location_on, color: Colors.grey, size: 16),
-                  Text(
-                    'Goa, India · 468 km away',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
